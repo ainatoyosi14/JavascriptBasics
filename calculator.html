@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .calculator{
+            background: #f8f8f8;
+            margin: auto;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            box-shadow: 2px 15px 100px 10px #cccccc;
+        }
+        .calculator .header{
+            background-color: white;
+            border-radius: 20px;
+            margin: 5px 0px;
+            padding-top: 10px;
+        }.calculator .header p{
+            padding: 5px;
+            margin: 0px;
+            text-align: right;
+            font-size: 55px;
+        }
+        .calculator .body{
+            width: 100%;
+            display: flex;
+        }
+        .calculator .body .numbers{
+            width: 68%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .calculator .body .numbers .buttons{
+            width: 30%;
+            margin: 10px auto;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .calculator .body .numbers .buttons:hover{
+            background: #c4c4c4;
+        }
+        .calculator .body .numbers .buttons:nth-last-child(4){
+            width: 45%;
+        }
+        .calculator .body .numbers .buttons:nth-last-of-type(-n+3){
+            width: 15%;
+            background: #880202;
+            color: #fff;
+            font-size: 17px;
+        }
+        .calculator .body .operators{
+            width: 30%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .calculator .body .operators .buttons{
+            width: 48%;
+            margin: 10px auto;
+            border-radius: 20px;
+            font-size: 30px;
+            color: white;
+            transition: all .5s;
+            background: #282828;
+        }
+        .calculator .body .operators .buttons:hover{
+            background: #3f3f3f;
+        }
+        .buttons:focus{
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="header">
+            <p id="numberShower">0</p>
+        </div>
+        <div class="body">
+            <div class="numbers">
+                <button class="buttons" value="9" onclick='getNumber(this.value)'>9</button>
+                <button class="buttons" value="8" onclick='getNumber(this.value)'>8</button>
+                <button class="buttons" value="7" onclick='getNumber(this.value)'>7</button>
+                <button class="buttons" value="6" onclick='getNumber(this.value)'>6</button>
+                <button class="buttons" value="5" onclick='getNumber(this.value)'>5</button>
+                <button class="buttons" value="4" onclick='getNumber(this.value)'>4</button>
+                <button class="buttons" value="3" onclick='getNumber(this.value)'>3</button>
+                <button class="buttons" value="2" onclick='getNumber(this.value)'>2</button>
+                <button class="buttons" value="1" onclick='getNumber(this.value)'>1</button>
+                <button class="buttons" value="0" onclick='getNumber(this.value)'>0</button>
+                <button class="buttons" value="." onclick='getNumber(this.value)'>.</button>
+                <button class="buttons" onclick="clearMethod()">AC</button>
+                <button class="buttons" onclick="equalsMethod()">=</button>
+            </div>
+            <div class="operators">
+                <button class="buttons" value="add" onclick='getOperation(this.value)'>+</button>
+                <button class="buttons" value="sub" onclick='getOperation(this.value)'>-</button>
+                <button class="buttons" value="mul" onclick='getOperation(this.value)'>*</button>
+                <button class="buttons" value="div" onclick='getOperation(this.value)'>/</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    numbersContainer = [];
+    numberHolder = '';
+    operationHolder = ''; 
+    result = 0;
+    equalToMethodCalled = false;
+    function equalsMethod() {
+        // push the number into the array
+        if (this.numberHolder !== '') {
+            console.log('niggaaaaaaaaaaaaaa');
+            this.numbersContainer.push(this.numberHolder);
+            // check if array length is greater than 2
+            if (this.numbersContainer.length > 1 ){
+                var result = this.calculate(this.operationHolder);
+                document.getElementById("numberShower").innerHTML = result;
+                console.log(this.calculate(this.operationHolder), ':::: bitch :::::');
+                this.numbersContainer = [result];
+                this.equalToMethodCalled = true;
+            }
+        }
+    }
+    function getOperation(operation){
+        if (this.equalToMethodCalled) {
+            this.numberHolder = '';
+            this.operationHolder = operation;
+            this.equalToMethodCalled === !this.equalToMethodCalled;
+        }
+        if (this.numberHolder !== '') {
+            // push the number into the array
+            this.numbersContainer.push(this.numberHolder);
+            // check if array length is greater than 2
+            if (this.numbersContainer.length > 1 ){
+                document.getElementById("numberShower").innerHTML = this.calculate(this.operationHolder);
+                console.log(this.calculate(this.operationHolder), '::::bitch :::::');
+            }
+            // assign operation to global varible operationHolder
+
+            this.operationHolder = operation;
+            console.log(this.operationHolder, 'this is the operation');
+            
+            // empty number holder for next number
+            this.numberHolder = '';
+            console.log(this.numbersContainer, 'number container');
+        }
+        
+    }
+    function calculate(operationHolder) {
+        if(operationHolder === 'add') {
+            var result = this.numbersContainer.reduce(addFunction);
+            // show result
+            this.numbersContainer = [result];
+            return result;
+        }
+        else if (operationHolder === 'sub'){
+            var result = this.numbersContainer.reduce(subFunction);
+            this.numbersContainer = [result];
+            return result;
+        }
+        else if (operationHolder === 'div'){
+            var result = this.numbersContainer.reduce(divFunction);
+            this.numbersContainer = [result];
+            return result;
+        }
+        else if (operationHolder === 'mul'){
+            var result = this.numbersContainer.reduce(mulFunction);
+            this.numbersContainer = [result];
+            return result;
+        }
+        return;
+    }
+    function getNumber(number){
+        // concatinate number to numberHolder
+        this.numberHolder = this.numberHolder + number;
+        document.getElementById("numberShower").innerHTML = this.numberHolder;
+        console.log(this.numberHolder, 'this is the number');   
+    }
+    function clearMethod(){
+        this.numbersContainer = [];
+        this.numberHolder = '';
+        this.operationHolder = ''; 
+        this.result = 0;
+        this.equalToMethodCalled = false;
+        document.getElementById("numberShower").innerHTML = 0;
+    }
+    function addFunction(total, num) {
+        return parseFloat(total) + parseFloat(num);
+    }
+    function subFunction(total, num) {
+        return parseFloat(total) - parseFloat(num);
+    }
+    function mulFunction(total, num) {
+        return parseFloat(total) * parseFloat(num);
+    }
+    function divFunction(total, num) {
+        return parseFloat(total) / parseFloat(num);
+    }
+</script>
+</html>
